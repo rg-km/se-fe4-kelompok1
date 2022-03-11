@@ -10,6 +10,8 @@ const DIRECTION = {
   DOWN: 3,
 };
 
+//add apple
+
 const MOVE_INTERVAL = 120;
 
 function initPosition() {
