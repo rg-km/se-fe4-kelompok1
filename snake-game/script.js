@@ -47,6 +47,10 @@ let apples = [
     color: "red",
     position: initPosition(),
   },
+  {
+    color: "blue",
+    position: initPosition(),
+  },
 ];
 
 function drawCell(ctx, x, y, color) {
