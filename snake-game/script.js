@@ -10,8 +10,6 @@ const DIRECTION = {
   DOWN: 3,
 };
 
-//add apple
-
 const MOVE_INTERVAL = 120;
 
 function initPosition() {
@@ -47,6 +45,10 @@ let snake1 = initSnake("purple");
 let apples = [
   {
     color: "red",
+    position: initPosition(),
+  },
+  {
+    color: "blue",
     position: initPosition(),
   },
 ];
