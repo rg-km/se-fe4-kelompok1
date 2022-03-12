@@ -10,13 +10,150 @@ const DIRECTION = {
   DOWN: 3,
 };
 
+const LEVELS = [
+  {
+    level: 1,
+    coords: generateLevel(1),
+    color: "black",
+    speed: 120,
+  },
+  {
+    level: 1,
+    coords: generateLevel(2),
+    color: "black",
+    speed: 120,
+  },
+  {
+    level: 1,
+    coords: generateLevel(3),
+    color: "black",
+    speed: 120,
+  },
+  {
+    level: 1,
+    coords: generateLevel(4),
+    color: "black",
+    speed: 120,
+  },
+  {
+    level: 1,
+    coords: generateLevel(5),
+    color: "black",
+    speed: 120,
+  },
+];
+
 const MOVE_INTERVAL = 120;
 
+let currentLevel = 0;
+
+function generateLevel(level) {
+  let coords = [];
+  switch (level) {
+    case 1:
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 10 });
+      }
+      break;
+    case 2:
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 10 });
+      }
+
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 20 });
+      }
+      break;
+    case 3:
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 10 });
+      }
+
+      for (let i = 0; i < WIDTH; i++) {
+        coords.push({ x: i, y: 0 });
+        coords.push({ x: i, y: HEIGHT - 1 });
+      }
+
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 20 });
+      }
+      break;
+    case 4:
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 10 });
+      }
+
+      for (let i = 0; i < WIDTH; i++) {
+        coords.push({ x: i, y: 0 });
+        coords.push({ x: i, y: HEIGHT - 1 });
+      }
+
+      for (let i = 0; i < HEIGHT; i++) {
+        coords.push({ x: 0, y: i });
+        coords.push({ x: WIDTH - 1, y: i });
+      }
+
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 20 });
+      }
+      break;
+    case 5:
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 10 });
+      }
+
+      for (let i = 0; i < WIDTH; i++) {
+        coords.push({ x: i, y: 0 });
+        coords.push({ x: i, y: HEIGHT - 1 });
+      }
+
+      for (let i = 0; i < HEIGHT; i++) {
+        coords.push({ x: 0, y: i });
+        coords.push({ x: WIDTH - 1, y: i });
+      }
+
+      for (let i = 5; i < WIDTH - 5; i++) {
+        coords.push({ x: i, y: 20 });
+      }
+
+      const adds = [
+        { x: 3, y: 3 },
+        { x: 4, y: 3 },
+        { x: 3, y: 4 },
+        { x: WIDTH - 4, y: 3 },
+        { x: WIDTH - 5, y: 3 },
+        { x: WIDTH - 4, y: 4 },
+        { x: WIDTH - 4, y: HEIGHT - 4 },
+        { x: WIDTH - 5, y: HEIGHT - 4 },
+        { x: WIDTH - 4, y: HEIGHT - 5 },
+        { x: 3, y: HEIGHT - 4 },
+        { x: 4, y: HEIGHT - 4 },
+        { x: 3, y: HEIGHT - 5 },
+      ];
+      coords.push(...adds);
+      break;
+
+    default:
+      break;
+  }
+
+  return coords;
+}
+
 function initPosition() {
-  return {
-    x: Math.floor(Math.random() * WIDTH),
-    y: Math.floor(Math.random() * HEIGHT),
+  let newPos = {
+    x: random(1, WIDTH - 2),
+    y: random(1, HEIGHT - 2),
   };
+
+  while (!isSpaceFree(newPos)) {
+    newPos = {
+      x: random(1, WIDTH - 2),
+      y: random(1, HEIGHT - 2),
+    };
+  }
+
+  return newPos;
 }
 
 function initHeadAndBody() {
@@ -26,6 +163,12 @@ function initHeadAndBody() {
     head: head,
     body: body,
   };
+}
+
+function random(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function initDirection() {
@@ -43,6 +186,7 @@ function initSnake(color) {
 
 let snake1 = initSnake("purple");
 let lives = 3;
+
 let apples = [
   {
     color: "red",
@@ -55,6 +199,16 @@ let apples = [
 ];
 
 const scoreBoard = document.getElementById("score");
+const levelBoard = document.getElementById("level");
+
+function isSpaceFree(pos) {
+  for (let coor of LEVELS[currentLevel].coords) {
+    if (pos.x == coor.x && pos.y == coor.y) {
+      return false;
+    }
+  }
+  return true;
+}
 
 function drawLives() {
   const liveElement = document.getElementById("lives");
@@ -75,6 +229,12 @@ function drawScore(snake) {
   scoreBoard.textContent = snake.score;
 }
 
+function drawLevel(ctx, level) {
+  for (coor of level.coords) {
+    drawCell(ctx, coor.x, coor.y, level.color);
+  }
+}
+
 function draw() {
   setInterval(function () {
     let snakeCanvas = document.getElementById("snakeBoard");
@@ -86,6 +246,9 @@ function draw() {
     for (let i = 1; i < snake1.body.length; i++) {
       drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
     }
+
+    // Draw Level
+    drawLevel(ctx, LEVELS[currentLevel]);
 
     // Draw apple
     for (let i = 0; i < apples.length; i++) {
@@ -121,10 +284,26 @@ function teleport(snake) {
   }
 }
 
+function gameOver() {
+  var audio = new Audio("assets/game-over.mp3");
+  audio.play();
+  alert("Game Over");
+  window.location.reload();
+}
+
+function checkIsLevelUp() {
+  if (snake1.score % 5 === 0 && currentLevel < 4) {
+    currentLevel++;
+    levelBoard.textContent = currentLevel + 1;
+  }
+}
+
 function eat(snake, apples) {
   for (let i = 0; i < apples.length; i++) {
     let apple = apples[i];
     if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
+      checkIsLevelUp();
+
       apple.position = initPosition();
       snake.score++;
       snake.body.push({ x: snake.head.x - 5, y: snake.head.y - 5 });
@@ -158,17 +337,28 @@ function moveUp(snake) {
 
 function checkCollision(snake) {
   let isCollide = false;
+
+  // Check if snake head collide with body
   for (let k = 1; k < snake.body.length; k++) {
     if (snake.head.x == snake.body[k].x && snake.head.y == snake.body[k].y) {
       isCollide = true;
     }
   }
-  if (isCollide) {
-    var audio = new Audio("assets/game-over.mp3");
-    audio.play();
 
-    alert("Game over");
-    snake1 = initSnake("purple");
+  // Check if snake head collide with level
+  for (let coor of LEVELS[currentLevel].coords) {
+    if (snake.head.x == coor.x && snake.head.y == coor.y) {
+      isCollide = true;
+    }
+  }
+
+  if (isCollide) {
+    lives--;
+    drawLives();
+
+    if (lives <= 0) {
+      gameOver();
+    }
   }
   return isCollide;
 }
@@ -189,13 +379,11 @@ function move(snake) {
       break;
   }
 
-  if (!checkCollision(snake1)) {
-    setTimeout(function () {
-      move(snake);
-    }, MOVE_INTERVAL);
-  } else {
-    initGame();
-  }
+  checkCollision(snake1);
+
+  setTimeout(function () {
+    move(snake);
+  }, MOVE_INTERVAL);
 
   moveBody(snake);
 }
