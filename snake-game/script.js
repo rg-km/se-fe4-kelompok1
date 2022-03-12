@@ -40,8 +40,9 @@ function initSnake(color) {
     score: 0,
   };
 }
-let snake1 = initSnake("purple");
 
+let snake1 = initSnake("purple");
+let lives = 3;
 let apples = [
   {
     color: "red",
@@ -53,21 +54,25 @@ let apples = [
   },
 ];
 
+const scoreBoard = document.getElementById("score");
+
+function drawLives() {
+  const liveElement = document.getElementById("lives");
+  liveElement.textContent = "";
+  for (let i = 0; i < lives; i++) {
+    var myImage = new Image(15, 15);
+    myImage.src = "assets/hearth.png";
+    liveElement.appendChild(myImage);
+  }
+}
+
 function drawCell(ctx, x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 
 function drawScore(snake) {
-  let scoreCanvas;
-  scoreCanvas = document.getElementById("score1Board");
-
-  let scoreCtx = scoreCanvas.getContext("2d");
-
-  scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-  scoreCtx.font = "30px Arial";
-  scoreCtx.fillStyle = snake.color;
-  scoreCtx.fillText(snake.score, 10, scoreCanvas.scrollHeight / 2);
+  scoreBoard.textContent = snake.score;
 }
 
 function draw() {
@@ -82,6 +87,7 @@ function draw() {
       drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
     }
 
+    // Draw apple
     for (let i = 0; i < apples.length; i++) {
       let apple = apples[i];
 
@@ -95,6 +101,7 @@ function draw() {
       );
     }
 
+    // Draw score
     drawScore(snake1);
   }, REDRAW_INTERVAL);
 }
@@ -225,6 +232,7 @@ document.addEventListener("keydown", function (event) {
 
 function initGame() {
   move(snake1);
+  drawLives();
 }
 
 initGame();
