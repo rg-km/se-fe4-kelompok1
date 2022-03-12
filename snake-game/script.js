@@ -242,7 +242,16 @@ function draw() {
 
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-    drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color);
+
+    var imghead = document.getElementById("head");
+      ctx.drawImage(
+        imghead,
+        snake1.head.x * CELL_SIZE,
+        snake1.head.y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+
     for (let i = 1; i < snake1.body.length; i++) {
       drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
     }
@@ -264,6 +273,7 @@ function draw() {
       );
     }
 
+   
     // Draw score
     drawScore(snake1);
   }, REDRAW_INTERVAL);
