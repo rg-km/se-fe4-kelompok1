@@ -18,28 +18,28 @@ const LEVELS = [
     speed: 120,
   },
   {
-    level: 1,
+    level: 2,
     coords: generateLevel(2),
     color: "black",
-    speed: 120,
+    speed: 110,
   },
   {
-    level: 1,
+    level: 3,
     coords: generateLevel(3),
     color: "black",
-    speed: 120,
+    speed: 100,
   },
   {
-    level: 1,
+    level: 4,
     coords: generateLevel(4),
     color: "black",
-    speed: 120,
+    speed: 90,
   },
   {
-    level: 1,
+    level: 5,
     coords: generateLevel(5),
     color: "black",
-    speed: 120,
+    speed: 80,
   },
 ];
 
@@ -242,15 +242,14 @@ function draw() {
 
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-
     var imghead = document.getElementById("head");
-      ctx.drawImage(
-        imghead,
-        snake1.head.x * CELL_SIZE,
-        snake1.head.y * CELL_SIZE,
-        CELL_SIZE,
-        CELL_SIZE
-      );
+    ctx.drawImage(
+      imghead,
+      snake1.head.x * CELL_SIZE,
+      snake1.head.y * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE
+    );
 
     for (let i = 1; i < snake1.body.length; i++) {
       drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
@@ -273,7 +272,6 @@ function draw() {
       );
     }
 
-   
     // Draw score
     drawScore(snake1);
   }, REDRAW_INTERVAL);
@@ -312,10 +310,10 @@ function eat(snake, apples) {
   for (let i = 0; i < apples.length; i++) {
     let apple = apples[i];
     if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
+      snake.score++;
       checkIsLevelUp();
 
       apple.position = initPosition();
-      snake.score++;
       snake.body.push({ x: snake.head.x - 5, y: snake.head.y - 5 });
     }
   }
@@ -393,7 +391,7 @@ function move(snake) {
 
   setTimeout(function () {
     move(snake);
-  }, MOVE_INTERVAL);
+  }, LEVELS[currentLevel].speed);
 
   moveBody(snake);
 }
