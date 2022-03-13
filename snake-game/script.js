@@ -303,8 +303,15 @@ function checkIsLevelUp() {
   if (snake1.score % 5 === 0 && currentLevel < 4) {
     currentLevel++;
     levelBoard.textContent = currentLevel + 1;
+    var audio = new Audio();
+    audio.play("asset/Snake-sound");
   }
 }
+    function Snakesound() {
+      var audio = new Audio();
+      audio.play("asset/Snake-sound");
+    }
+  
 
 function eat(snake, apples) {
   for (let i = 0; i < apples.length; i++) {
