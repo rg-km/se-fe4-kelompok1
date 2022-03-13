@@ -1,26 +1,39 @@
 <html>
 
 <head>
+    <title>FE4 - Kelompok 1</title>
 </head>
 <link rel="stylesheet" href="css/style.css">
 
 <body onload="draw();">
-    <div class="info-board">
-        <div class="lives-container">
-            <div>LIVES</div>
-            <div id="lives">
+    <div class="App">
+        <div class="modal" id="modal">
+            <div class="modal__game-over">
+                <h2>Game Over</h2>
+                <div class="modal__game-over_img">
+                    <img src="assets/snake.png" alt="Snake">
+                </div>
+                <button class="modal__game-over_btn" onclick="location.reload()">PLAY AGAIN</button>
             </div>
         </div>
-        <div class="score">
-            <p>SCORE <span id="score">0</span></p>
+        <div class="info-board">
+            <div class="lives-container">
+                <div>LIVES</div>
+                <div id="lives">
+                </div>
+            </div>
+            <div class="score">
+                <p>SCORE <span id="score">0</span></p>
+            </div>
+            <div class="level">
+                <p>LEVEL <span id="level">1</span></p>
+            </div>
         </div>
-        <div class="level">
-            <p>LEVEL <span id="level">1</span></p>
-        </div>
+        <img id="apple" style="display: none;" width="20" height="20" src="assets/apple.png" alt="Apple">
+        <img id="head" style="display: none;" width="20" height="20" src="assets/head.png" alt="Head">
+        <canvas id="snakeBoard" width="600" height="600" style="border:1px solid #ffff; margin-top: 10px;"></canvas>
     </div>
-    <img id="apple" style="display: none;" width="20" height="20" src="assets/apple.png" alt="Apple">
-    <img id="head" style="display: none;" width="20" height="20" src="assets/head.png" alt="Head">
-    <canvas id="snakeBoard" width="600" height="600" style="border:1px solid #000000; margin-top: 10px;"></canvas>
+
     <script type="text/javascript" src="script.js"></script>
 </body>
 

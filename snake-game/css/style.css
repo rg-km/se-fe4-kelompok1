@@ -1,3 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
+
+/* Reset Style */
+button,
+input[type="submit"],
+input[type="reset"] {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+i,
+aside,
+canvas,
+details,
+embed,
+figure,
+output,
+section,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+body {
+  background: #2c3e50;
+}
+
+.App {
+  width: 600px;
+  margin: 30px auto;
+  color: white;
+}
+
+.modal {
+  position: fixed;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-family: "Permanent Marker", cursive;
+}
+
+.modal__game-over {
+  width: 400px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #008e89;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.modal__game-over_img img {
+  width: 200px;
+  height: 200px;
+}
+
+.modal__game-over h2 {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.modal__game-over_btn {
+  width: 200px;
+  background-color: #00c897;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  outline: none;
+  padding: 15px 0;
+  cursor: pointer;
+  font-family: inherit;
+  color: white;
+  transition: background 250ms ease-in-out, transform 150ms ease;
+  text-decoration: none;
+}
+
+button:hover,
+button:focus {
+  background: #21a786;
+}
+
+button:focus {
+  outline-offset: -4px;
+}
+
+button:active {
+  transform: scale(0.99);
+}
+
 .info-board {
   display: flex;
   width: 600px;

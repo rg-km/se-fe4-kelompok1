@@ -184,6 +184,7 @@ function initSnake(color) {
   };
 }
 
+let isGameOver = false;
 let snake1 = initSnake("purple");
 let lives = 3;
 
@@ -200,6 +201,7 @@ let apples = [
 
 const scoreBoard = document.getElementById("score");
 const levelBoard = document.getElementById("level");
+const modal = document.getElementById("modal");
 
 function isSpaceFree(pos) {
   for (let coor of LEVELS[currentLevel].coords) {
@@ -235,12 +237,31 @@ function drawLevel(ctx, level) {
   }
 }
 
+function drawGrid(ctx) {
+  ctx.globalAlpha = 0.2;
+  for (var col = 0; col < WIDTH; col++) {
+    for (var row = 0; row < HEIGHT; row++) {
+      if ((col + row) % 2 === 1) {
+        ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      }
+    }
+  }
+  // getRange(width).forEach(column => getRange(height).forEach(row => {
+  //   if ((column + row) % 2 === 1) {
+  //     ctx.fillRect(column * cellSide, row * cellSide, cellSide, cellSide)
+  //   }
+  // }))
+  ctx.globalAlpha = 1;
+}
+
 function draw() {
   setInterval(function () {
     let snakeCanvas = document.getElementById("snakeBoard");
     let ctx = snakeCanvas.getContext("2d");
 
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    drawGrid(ctx);
 
     var imghead = document.getElementById("head");
     ctx.drawImage(
@@ -293,10 +314,13 @@ function teleport(snake) {
 }
 
 function gameOver() {
+  isGameOver = true;
   var audio = new Audio("assets/game-over.mp3");
   audio.play();
-  alert("Game Over");
-  window.location.reload();
+
+  setTimeout(() => {
+    modal.style.display = "flex";
+  }, 500);
 }
 
 function checkIsLevelUp() {
@@ -372,6 +396,8 @@ function checkCollision(snake) {
 }
 
 function move(snake) {
+  if (isGameOver) return;
+
   switch (snake.direction) {
     case DIRECTION.LEFT:
       moveLeft(snake);
