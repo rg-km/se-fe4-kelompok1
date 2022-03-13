@@ -211,6 +211,11 @@ let foods = [
   },
 ];
 
+const heart = {
+  color: "blue",
+  position: initPosition(),
+}
+
 const scoreBoard = document.getElementById("score");
 const levelBoard = document.getElementById("level");
 const speedBoard = document.getElementById("speed");
@@ -279,7 +284,20 @@ function draw() {
     for (let i = 1; i < snake1.body.length; i++) {
       drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
     }
-
+// draw nyawa
+if (isPrime(snake1.score)){
+      var frequency = 200;
+      if (Math.floor(Date.now() / frequency) % 2) {
+        var imgheart = document.getElementById("heart");
+      ctx.drawImage(
+        imgheart,
+        heart.position.x * CELL_SIZE,
+        heart.position.y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+      }
+}
     // Draw Level
     drawLevel(ctx, LEVELS[currentLevel]);
 
@@ -333,19 +351,32 @@ function checkIsLevelUp() {
   if (snake1.score % 5 === 0 && currentLevel < 4) {
     currentLevel++;
     levelBoard.textContent = currentLevel + 1;
+    var audio = new Audio();
+    audio.play("asset/Snake-sound");
   }
 }
 
-function isPrime(num) {
-  for (let i = 2, s = Math.sqrt(num); i <= s; i++)
-    if (num % i === 0) return false;
-  return num > 1;
+function isPrime(num){
+  for (let i=2, s=Math.sqrt(num); i<=s;i++)
+  if(num % i===0) return false;
+  return num>1;
 }
 
-function eat(snake, foods) {
-  for (let i = 0; i < foods.length; i++) {
-    let food = foods[i];
-    if (snake.head.x == food.position.x && snake.head.y == food.position.y) {
+
+function eat(snake, apples) {
+
+  if(snake.head.x == heart.position.x && snake.head.y == heart.position.y){
+    if(lives < 3) {
+      lives++;
+    }
+    
+    snake.score++;
+    heart.position = initPosition();
+  }
+  
+  for (let i = 0; i < apples.length; i++) {
+    let apple = apples[i];
+    if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
       snake.score++;
       checkIsLevelUp();
 
