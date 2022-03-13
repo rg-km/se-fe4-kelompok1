@@ -16,21 +16,25 @@
                 <button class="modal__game-over_btn" onclick="location.reload()">PLAY AGAIN</button>
             </div>
         </div>
-        <div class="info-board">
+        <div class="info">
             <div class="lives-container">
                 <div>LIVES</div>
                 <div id="lives">
                 </div>
             </div>
-            <div class="score">
+            <div class="info__board score">
                 <p>SCORE <span id="score">0</span></p>
             </div>
-            <div class="level">
+            <div class="info__board level">
                 <p>LEVEL <span id="level">1</span></p>
+            </div>
+            <div class="info__board speed">
+                <p>SPEED <span id="speed">1</span></p>
             </div>
         </div>
         <img id="apple" style="display: none;" width="20" height="20" src="assets/apple.png" alt="Apple">
         <img id="head" style="display: none;" width="20" height="20" src="assets/head.png" alt="Head">
+        <img id="heart" style="display: none;" width="20" height="20" src="assets/hearth.png" alt="heart">
         <canvas id="snakeBoard" width="600" height="600" style="border:1px solid #ffff; margin-top: 10px;"></canvas>
     </div>
 

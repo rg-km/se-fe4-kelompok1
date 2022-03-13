@@ -1,6 +1,7 @@
 const CELL_SIZE = 20;
 const CANVAS_SIZE = 600;
 const REDRAW_INTERVAL = 50;
+const MAX_LIVE = 3;
 const WIDTH = CANVAS_SIZE / CELL_SIZE;
 const HEIGHT = CANVAS_SIZE / CELL_SIZE;
 const DIRECTION = {
@@ -8,6 +9,10 @@ const DIRECTION = {
   RIGHT: 1,
   UP: 2,
   DOWN: 3,
+};
+const FOOD_TYPES = {
+  APPLE: 0,
+  LIFE: 1,
 };
 
 const LEVELS = [
@@ -188,19 +193,27 @@ let isGameOver = false;
 let snake1 = initSnake("purple");
 let lives = 3;
 
-let apples = [
+let foods = [
   {
-    color: "red",
+    type: FOOD_TYPES.APPLE,
     position: initPosition(),
+    image: document.getElementById("apple"),
   },
   {
-    color: "blue",
+    type: FOOD_TYPES.APPLE,
     position: initPosition(),
+    image: document.getElementById("apple"),
+  },
+  {
+    type: FOOD_TYPES.LIFE,
+    position: initPosition(),
+    image: document.getElementById("heart"),
   },
 ];
 
 const scoreBoard = document.getElementById("score");
 const levelBoard = document.getElementById("level");
+const speedBoard = document.getElementById("speed");
 const modal = document.getElementById("modal");
 
 function isSpaceFree(pos) {
@@ -227,10 +240,6 @@ function drawCell(ctx, x, y, color) {
   ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 
-function drawScore(snake) {
-  scoreBoard.textContent = snake.score;
-}
-
 function drawLevel(ctx, level) {
   for (coor of level.coords) {
     drawCell(ctx, coor.x, coor.y, level.color);
@@ -246,11 +255,6 @@ function drawGrid(ctx) {
       }
     }
   }
-  // getRange(width).forEach(column => getRange(height).forEach(row => {
-  //   if ((column + row) % 2 === 1) {
-  //     ctx.fillRect(column * cellSide, row * cellSide, cellSide, cellSide)
-  //   }
-  // }))
   ctx.globalAlpha = 1;
 }
 
@@ -279,22 +283,24 @@ function draw() {
     // Draw Level
     drawLevel(ctx, LEVELS[currentLevel]);
 
-    // Draw apple
-    for (let i = 0; i < apples.length; i++) {
-      let apple = apples[i];
+    // Draw foods
+    for (let i = 0; i < foods.length; i++) {
+      let food = foods[i];
 
-      var img = document.getElementById("apple");
+      if (food.type === FOOD_TYPES.LIFE && !isPrime(snake1.score)) continue;
+
       ctx.drawImage(
-        img,
-        apple.position.x * CELL_SIZE,
-        apple.position.y * CELL_SIZE,
+        food.image,
+        food.position.x * CELL_SIZE,
+        food.position.y * CELL_SIZE,
         CELL_SIZE,
         CELL_SIZE
       );
     }
 
-    // Draw score
-    drawScore(snake1);
+    // Draw Info
+    scoreBoard.textContent = snake1.score;
+    speedBoard.textContent = LEVELS[currentLevel].speed;
   }, REDRAW_INTERVAL);
 }
 
@@ -330,14 +336,25 @@ function checkIsLevelUp() {
   }
 }
 
-function eat(snake, apples) {
-  for (let i = 0; i < apples.length; i++) {
-    let apple = apples[i];
-    if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
+function isPrime(num) {
+  for (let i = 2, s = Math.sqrt(num); i <= s; i++)
+    if (num % i === 0) return false;
+  return num > 1;
+}
+
+function eat(snake, foods) {
+  for (let i = 0; i < foods.length; i++) {
+    let food = foods[i];
+    if (snake.head.x == food.position.x && snake.head.y == food.position.y) {
       snake.score++;
       checkIsLevelUp();
 
-      apple.position = initPosition();
+      if (food.type === FOOD_TYPES.LIFE && lives < 3) {
+        lives++;
+        drawLives();
+      }
+
+      food.position = initPosition();
       snake.body.push({ x: snake.head.x - 5, y: snake.head.y - 5 });
     }
   }
@@ -346,25 +363,25 @@ function eat(snake, apples) {
 function moveLeft(snake) {
   snake.head.x--;
   teleport(snake);
-  eat(snake, apples);
+  eat(snake, foods);
 }
 
 function moveRight(snake) {
   snake.head.x++;
   teleport(snake);
-  eat(snake, apples);
+  eat(snake, foods);
 }
 
 function moveDown(snake) {
   snake.head.y++;
   teleport(snake);
-  eat(snake, apples);
+  eat(snake, foods);
 }
 
 function moveUp(snake) {
   snake.head.y--;
   teleport(snake);
-  eat(snake, apples);
+  eat(snake, foods);
 }
 
 function checkCollision(snake) {
