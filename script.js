@@ -197,17 +197,17 @@ let foods = [
   {
     type: FOOD_TYPES.APPLE,
     position: initPosition(),
-    image: document.getElementById("apple"),
+    image: createImage("assets/apple.png"),
   },
   {
     type: FOOD_TYPES.APPLE,
     position: initPosition(),
-    image: document.getElementById("apple"),
+    image: createImage("assets/apple.png"),
   },
   {
     type: FOOD_TYPES.LIFE,
     position: initPosition(),
-    image: document.getElementById("heart2"),
+    image: createImage("assets/heart2.png"),
   },
 ];
 
@@ -215,6 +215,21 @@ const scoreBoard = document.getElementById("score");
 const levelBoard = document.getElementById("level");
 const speedBoard = document.getElementById("speed");
 const modal = document.getElementById("modal");
+
+// Images for the snake
+const snakeHeads = {
+  [DIRECTION.LEFT]: createImage("assets/snakeHead/left.png"),
+  [DIRECTION.RIGHT]: createImage("assets/snakeHead/right.png"),
+  [DIRECTION.UP]: createImage("assets/snakeHead/up.png"),
+  [DIRECTION.DOWN]: createImage("assets/snakeHead/down.png"),
+};
+const snakeBody = createImage("assets/SnakeBody.png");
+
+function createImage(src) {
+  const image = new Image(CELL_SIZE, CELL_SIZE);
+  image.src = src;
+  return image;
+}
 
 function isSpaceFree(pos) {
   for (let coor of LEVELS[currentLevel].coords) {
@@ -229,9 +244,8 @@ function drawLives() {
   const liveElement = document.getElementById("lives");
   liveElement.textContent = "";
   for (let i = 0; i < lives; i++) {
-    var myImage = new Image(15, 15);
-    myImage.src = "assets/hearth.png";
-    liveElement.appendChild(myImage);
+    var heartImg = createImage("assets/heart.png");
+    liveElement.appendChild(heartImg);
   }
 }
 
@@ -266,10 +280,8 @@ function draw() {
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     drawGrid(ctx);
-
-    var imghead = document.getElementById("head");
     ctx.drawImage(
-      imghead,
+      snakeHeads[snake1.direction],
       snake1.head.x * CELL_SIZE,
       snake1.head.y * CELL_SIZE,
       CELL_SIZE,
@@ -277,18 +289,21 @@ function draw() {
     );
 
     for (let i = 1; i < snake1.body.length; i++) {
-      drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
+      ctx.drawImage(
+        snakeBody,
+        snake1.body[i].x * CELL_SIZE,
+        snake1.body[i].y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
     }
 
     // Draw Level
     drawLevel(ctx, LEVELS[currentLevel]);
 
     // Draw foods
-    for (let i = 0; i < foods.length; i++) {
-      let food = foods[i];
-
-      if (food.type === FOOD_TYPES.LIFE && !isPrime(snake1.score)) continue;
-
+    for (const food of foods) {
+      if (food.type === FOOD_TYPES.LIFE) continue;
       ctx.drawImage(
         food.image,
         food.position.x * CELL_SIZE,
@@ -298,6 +313,23 @@ function draw() {
       );
     }
 
+    for (const food of foods) {
+      if (food.type === FOOD_TYPES.LIFE) {
+        // draw blinking image
+        if (isPrime(snake1.score)) {
+          var frequency = 200;
+          if (Math.floor(Date.now() / frequency) % 2) {
+            ctx.drawImage(
+              food.image,
+              food.position.x * CELL_SIZE,
+              food.position.y * CELL_SIZE,
+              CELL_SIZE,
+              CELL_SIZE
+            );
+          }
+        }
+      }
+    }
     // Draw Info
     scoreBoard.textContent = snake1.score;
     speedBoard.textContent = LEVELS[currentLevel].speed;
@@ -326,7 +358,7 @@ function gameOver() {
 
   setTimeout(() => {
     modal.style.display = "flex";
-  }, 500);
+  }, 350);
 }
 
 function checkIsLevelUp() {
